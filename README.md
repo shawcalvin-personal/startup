@@ -13,10 +13,19 @@ How often do you find yourself purusing through Netflix with no clue what to wat
 ### Saved Movies
 ![my-movies](./mock-images/my-movies.png)
 
+## Key Features  
+- Secure login over HTTPS
+- Ability to upvote and downvote movies
+- Today's top movies displayed in real time
+- Movie upvotes and downvotes upvoted in real time
+- Ability to save movies to user profile
+- Ability to retrieve and display random movies from database
+- User's saved movies are persistently stored in a database
+
 ## Technologies
 I will use the technologies in the following ways:  
 
-**HTML** - Uses HTML for basic structuring and organization across three HTML pages. One HTML page for user login. One page for movie suggestion generation. One page for the movies that you have voted for.  
+**HTML** - Uses HTML for basic structuring and organization across three HTML pages. One HTML page for user login. One page for movie suggestion generation. One page for saved movies.  
  
 **CSS** - Uses CSS for basic styling and animation for all display sizes. Create accessible and appealing designs.  
 
@@ -30,4 +39,4 @@ I will use the technologies in the following ways:
 
 **Database Data** - Stores a user's reviewed movies and a list of available movies.  
 
-**WebSocket Data** - Top rated movies are broadcasted as users upvote and downvote movies.  
+**WebSocket Data** - Top rated movies are broadcasted as users upvote and downvote movies. All movie upvotes and downvotes are updated in real time.  
