@@ -37,6 +37,6 @@ I will use the technologies in the following ways:
 
 **Authentication** - Users will create an account and login. Within their account, they will have access to the movies that they have reviewed. They can also get random movie suggestions and view top rated movies.  
 
-**Database Data** - Stores a user's reviewed movies and a list of available movies.  
+**Database Data** - Stores a user's saved movies and a list of available movies.  
 
 **WebSocket Data** - Top rated movies are broadcasted as users upvote and downvote movies. All movie upvotes and downvotes are updated in real time.  
