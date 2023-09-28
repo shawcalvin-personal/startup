@@ -40,3 +40,14 @@ I will use the technologies in the following ways:
 **Database Data** - Stores a user's saved movies and a list of available movies.  
 
 **WebSocket Data** - Top rated movies are broadcasted as users upvote and downvote movies. All movie upvotes and downvotes are updated in real time.  
+
+## HTML Deliverable
+For this deliverable, I built out the webpage structure using HTML.  
+- HTML Pages - Three HTML pages that allow the user to login, find movie suggestions, and view saved movies.  
+- Links - The login page automatically links to the movie suggestions page, and all pages appropriately link to each other.  
+- Textual Content - Page titles and user instructions are represented as text.  
+- Third Party - The "generate movies" button will pull random movies from a movie API.
+- Images - Each movie suggestion is represented by an image pulled from the internet.  
+- Login - The home page contains a login placeholder that redirects the user to the "Find Movies" page upon login.
+- Database Data - The movies on the "Saved Movies" page represent data stored in the database.
+- WebSocket Data - The movies on the "Find Movies" tab, along with their user scores, represent websocket data that will be updated in real time.
