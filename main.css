@@ -1,0 +1,107 @@
+header {
+    flex: 0 80px;
+}
+
+main {
+    flex: 1 calc(100vh - 110px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+menu {
+    flex: 1;
+    display: flex;
+    flex-direction: row !important;
+    list-style: none;
+  }
+
+.navbar-brand {
+    padding-left: 0.3em;
+    border-bottom: solid rgb(182, 182, 182) thin;
+  }
+  
+menu .nav-item {
+    padding: 0 0.3em;
+  }
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-width: 375px;
+}
+
+.movie-section {
+    width: 100%;
+    text-align: center;
+
+}
+.movie-container {
+    display: inline-block;
+}
+
+.button-container {
+    text-align: center;
+}
+
+.button-img {
+    min-width: 30px;
+    min-height: 30px;
+    max-width: min(1vmin, 1000px);
+    aspect-ratio: 1 / 1;
+}
+
+.like-count {
+    padding: 10px;
+    text-align: left;
+    margin: auto;
+}
+
+.movie-button {
+    width: 50%;
+}
+
+.save-button {
+    width: 80%;
+    background-color: #3e424b;
+    color: white;
+    margin: 10px;
+}
+
+.save-button:hover {
+    background-color: #828282;
+}
+
+.movie-img {
+    min-width: 200px;
+    min-height: 200px;
+    max-width: min(33vmin, 1000px);
+    aspect-ratio: 8.5 / 11;
+    padding: 10px;
+}
+
+.btn-dark {
+    background-color:#3e424b !important;
+    width: 40% !important;
+}
+
+.btn-dark:hover {
+    background-color: #828282 !important;
+}
+
+footer {
+    flex: 0 30px;
+}
+
+@media (max-height: 600px) {
+    header {
+      display: none;
+    }
+    footer {
+      display: none;
+    }
+    main {
+      flex: 1 100vh;
+    }
+  }
