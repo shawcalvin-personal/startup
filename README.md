@@ -51,3 +51,12 @@ For this deliverable, I built out the webpage structure using HTML.
 - Login - The home page contains a login placeholder that redirects the user to the "Find Movies" page upon login.
 - Database Data - The movies on the "Saved Movies" page represent data stored in the database.
 - WebSocket Data - The movies on the "Find Movies" tab, along with their user scores, represent websocket data that will be updated in real time.
+
+## HTML Deliverable
+For this deliverable, I properly styled the application into its final appearance.
+- Header, footer, and main content body  
+- Navigation elements - I added stylization and formatting to the navigation bar.  
+- Responsive to window sizing - Elements scale and resize depending on window sizing.  
+- Application elements - Updated styling and made elements responsive to interactions like hovering.  
+- Application text content - Consistent fonts and sizing for appropriate elements.  
+- Application images - Added consistent image sizing and aspect ratio.
