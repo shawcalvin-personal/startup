@@ -4,43 +4,50 @@
     <meta charset="UTF-8" />
     <!-- Tell browsers not to scale the viewport automatically -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Movie Finder HTML</title>
+    <title>Movie Finder</title>
     <link rel="icon" href="favicon.ico" />
+    <link rel="stylesheet" href = "main.css" />
+    <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+    crossorigin="anonymous"
+    />
   </head>
-  <body>
-    <!-- Use header, main, and footer elements to give semantic structure -->
-    <header>
-      <h1>Movie Finder</h1>
-
-      <!-- Navigation elements -->
-      <nav>
-        <!-- Menu is a semantic alternative to <ul> that represents an interaction -->
-        <menu>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="movies.html">Find Movies</a></li>
-          <li><a href="saved.html">Saved Movies</a></li>
+  <body class="bg-dark text-light">
+    <header class="container-fluid">
+      <nav class="navbar fixed-top navbar-dark">
+        <a class="navbar-brand" href="#">Movie Finder</a>
+        <menu class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="movies.html">Find Movies</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="saved.html">Saved Movies</a>
+          </li>
         </menu>
       </nav>
-
-      <!-- Since we don't have the ability to style we use old style HTML to give some visual formatting -->
-      <hr />
     </header>
 
-    <main>
-      <h1>Welcome</h1>
-      <p>Login to find movies</p>
-      <form method="get" action="movies.html">
-        <label for="name">Username</label>
-        <input type="text" id="name" placeholder="Your username here" />
-        <button type="submit">Login</button>
-      </form>
+    <main class="container-fluid bg-secondary text-center">
+      <div>
+        <h1>Welcome</h1>
+        <p>Login to play</p>
+        <form method="get" action="movies.html">
+          <input type="text" id="name" placeholder="Your name here" />
+          <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+      </div>
     </main>
 
-    <footer>
-      <hr />
-      <span class="text-reset">Author Name(s)</span>
-      <br />
-      <a href="https://github.com/shawcalvin/startup">GitHub</a>
+    <footer class="bg-dark text-white-50">
+      <div class="container-fluid">
+        <span class="text-reset">Calvin Shaw - </span>
+        <a class="text-reset" href="https://github.com/shawcalvin/startup">GitHub</a>
+      </div>
     </footer>
   </body>
 </html>
