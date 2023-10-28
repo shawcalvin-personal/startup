@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movie Finder</title>
     <link rel="icon" href="favicon.ico" />
+    <script src="randomImages.js"></script>
     <link rel="stylesheet" href = "main.css" />
     <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
@@ -65,10 +66,9 @@
       <div class="movie-section">
         <h2>Random Movies</h2>
         <div class="button-container">
-          <button type="button" class="btn btn-dark">Generate Random Movies</button>
+          <button type="button" class="btn btn-dark" onclick="loadRandomImages()">Generate Random Movies</button>
         </div>
-        <div class="movie-container">
-          <img class="movie-img" src="https://i.etsystatic.com/13367669/r/il/8adffe/1506815473/il_570xN.1506815473_lb94.jpg">
+        <div class="movie-container" id="random-1">
           <div class="button-container">
             <button type="button" class="btn btn-dark"><span class="like-count">99</span><img class="button-img" src="images/thumb-up.png"></button>
             <button type="button" class="btn btn-dark"><span class="like-count">4</span><img class="button-img" src="images/thumb-down.png"></button>
