@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movie Finder</title>
     <link rel="icon" href="favicon.ico" />
-    <script src="randomImages.js"></script>
+    <script src="images.js"></script>
     <link rel="stylesheet" href = "main.css" />
     <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
@@ -63,33 +63,19 @@
       </div>
       <br>
       <br>
-      <div class="movie-section">
+      <div class="movie-section" id="random-movies">
         <h2>Random Movies</h2>
         <div class="button-container">
-          <button type="button" class="btn btn-dark" onclick="loadRandomImages()">Generate Random Movies</button>
+          <button type="button" class="btn btn-dark" onclick="loadImages('#random-movies', getRandomImages())">Generate Random Movies</button>
         </div>
-        <div class="movie-container" id="random-1">
-          <div class="button-container">
-            <button type="button" class="btn btn-dark"><span class="like-count">99</span><img class="button-img" src="images/thumb-up.png"></button>
-            <button type="button" class="btn btn-dark"><span class="like-count">4</span><img class="button-img" src="images/thumb-down.png"></button>
-            <button type="button" class="save-button" class="btn btn-dark">Save Movie</button>
-          </div>
+        <div class="movie-container" id="movie">
+          <div class="button-container" id="random-button-1"></div>
         </div>
-        <div class="movie-container">
-          <img class="movie-img" src="https://photos1.blogger.com/x/blogger/4718/1605/1600/392061/poster%20nacho.jpg">
-          <div class="button-container">
-            <button type="button" class="btn btn-dark"><span class="like-count">99</span><img class="button-img" src="images/thumb-up.png"></button>
-            <button type="button" class="btn btn-dark"><span class="like-count">4</span><img class="button-img" src="images/thumb-down.png"></button>
-            <button type="button" class="save-button" class="btn btn-dark">Save Movie</button>
-          </div>
+        <div class="movie-container" id="movie">
+          <div class="button-container" id="random-button-2"></div>
         </div>
-        <div class="movie-container">
-          <img class="movie-img" src="https://m.media-amazon.com/images/I/71BPuv+iRbL.jpg">
-          <div class="button-container">
-            <button type="button" class="btn btn-dark"><span class="like-count">99</span><img class="button-img" src="images/thumb-up.png"></button>
-            <button type="button" class="btn btn-dark"><span class="like-count">4</span><img class="button-img" src="images/thumb-down.png"></button>
-            <button type="button" class="save-button" class="btn btn-dark">Save Movie</button>
-          </div>
+        <div class="movie-container" id="movie">
+          <div class="button-container" id="random-button-3"></div>
         </div>
       </div>
     </main>
