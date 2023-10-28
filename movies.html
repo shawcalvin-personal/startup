@@ -15,7 +15,7 @@
     crossorigin="anonymous"
     />
   </head>
-  <body class="bg-dark text-light">
+  <body class="bg-dark text-light" onload="loadPageDetails()">
     <header class="container-fluid">
       <nav class="navbar fixed-top navbar-dark">
         <a class="navbar-brand" href="#">Movie Finder</a>
@@ -34,31 +34,16 @@
     </header>
 
     <main>
-      <div class="movie-section">
+      <div class="movie-section" id="top-movies">
         <h2 class="section-header">Top Movies</h2>
-        <div class="movie-container">
-          <img class="movie-img" src="https://images.photowall.com/products/51078/movie-poster-jaws.jpg?h=699&q=85">
-          <div class="button-container">
-            <button type="button" class="btn btn-dark"><span class="like-count">99</span><img class="button-img" src="images/thumb-up.png"></button>
-            <button type="button" class="btn btn-dark"><span class="like-count">4</span><img class="button-img" src="images/thumb-down.png"></button>
-            <button type="button" class="save-button" class="btn btn-dark">Save Movie</button>
-          </div>
+        <div class="movie-container" id="movie">
+          <div class="button-container" id="random-button-1"></div>
         </div>
-        <div class="movie-container">
-          <img class="movie-img" src="https://m.media-amazon.com/images/I/91WlTjCgu4L.jpg">
-          <div class="button-container">
-            <button type="button" class="btn btn-dark"><span class="like-count">99</span><img class="button-img" src="images/thumb-up.png"></button>
-            <button type="button" class="btn btn-dark"><span class="like-count">4</span><img class="button-img" src="images/thumb-down.png"></button>
-            <button type="button" class="save-button" class="btn btn-dark">Save Movie</button>
-          </div>
+        <div class="movie-container" id="movie">
+          <div class="button-container" id="random-button-1"></div>
         </div>
-        <div class="movie-container">
-          <img class="movie-img" src="https://images.squarespace-cdn.com/content/v1/5acd17597c93273e08da4786/1547847934765-ZOU5KGSHYT6UVL6O5E5J/Shrek+Poster.png">
-          <div class="button-container">
-            <button type="button" class="btn btn-dark"><span class="like-count">99</span><img class="button-img" src="images/thumb-up.png"></button>
-            <button type="button" class="btn btn-dark"><span class="like-count">4</span><img class="button-img" src="images/thumb-down.png"></button>
-            <button type="button" class="save-button" class="btn btn-dark">Save Movie</button>
-          </div>
+        <div class="movie-container" id="movie">
+          <div class="button-container" id="random-button-1"></div>
         </div>
       </div>
       <br>
@@ -66,7 +51,7 @@
       <div class="movie-section" id="random-movies">
         <h2>Random Movies</h2>
         <div class="button-container">
-          <button type="button" class="btn btn-dark" onclick="loadImages('#random-movies', getRandomImages())">Generate Random Movies</button>
+          <button type="button" class="btn btn-dark" onclick="loadImages('#random-movies', getRandomMovies(3))">Generate Random Movies</button>
         </div>
         <div class="movie-container" id="movie">
           <div class="button-container" id="random-button-1"></div>
