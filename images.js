@@ -1,14 +1,12 @@
 function loadPageDetails() {
     createImageArray();
-    topMovies = getTopMovies(3);
-    console.log(topMovies)
+    const topMovies = getTopMovies(3);
     loadImages("#top-movies", topMovies)
 }
 
 function createImageArray() {
     const imgArray = new Array();
-    const likeCount = new Array();
-    for (let i = 1; i < 57; i++) {
+    for (let i = 1; i < 56; i++) {
         image = {
             imgName: i + '.png',
             likeCount: getLikeCount(this.imgName),
@@ -20,11 +18,11 @@ function createImageArray() {
     return imgArray;
 }
 
-function getLikeCount(imgName) {
+function getLikeCount(imgName) { // temporary, will eventually be replaced by database data
     return Math.floor(Math.random() * 100);
 }
 
-function getDislikeCount(imgName) {
+function getDislikeCount(imgName) { // temporary, will eventually be replaced by database data
     return Math.floor(Math.random() * 100);
 }
 
@@ -41,6 +39,7 @@ function getRandomMovies(count) {
     for (let i = 0; i < count; i++) {
         movies.push(getRandomMovie(storedMovies));
     }
+    console.log(movies);
     return movies;
 }
 
@@ -53,7 +52,7 @@ function getTopMovies(count) {
     return sorted.slice(0, count)
 }
 
-function createButtons(container) {
+function createButtons(container, isSavePage) {
     const movies = JSON.parse(localStorage.getItem('movies'));
 
     const img = String(container.children[0].src);
@@ -93,7 +92,15 @@ function createButtons(container) {
 
     const saveButton = document.createElement('button');
     saveButton.className = ('save-button btn btn-dark');
-    saveButton.textContent = 'Save Movie';
+    
+    if (isSavePage) {
+        saveButton.textContent = 'Remove Movie';
+        saveButton.onclick = unsaveMovie
+    } else {
+        saveButton.textContent = 'Save Movie';
+        saveButton.onclick = saveMovie
+    }
+    
 
     likeButton.appendChild(likeCount);
     likeButton.appendChild(likeImage);
@@ -107,13 +114,8 @@ function createButtons(container) {
     container.replaceChild(buttonContainer, container.lastChild);
 }
 
-function appendImageToButton(button, image) {
-
-}
-
-function loadImages(containerID, images) {
+function loadImages(containerID, images, isSavePage) {
     const container = document.querySelector(containerID);
-    console.log(container);
     const containerChildren = container.children;
     const movieContainers = new Array();
 
@@ -127,6 +129,8 @@ function loadImages(containerID, images) {
         imageElements.push(imageElement);
     });
 
+    console.log(imageElements)
+
     for (let i = 0; i < containerChildren.length; i++) {
         if (containerChildren[i].id == 'movie') {
             movieContainers.push(containerChildren[i]);
@@ -134,13 +138,18 @@ function loadImages(containerID, images) {
     }
 
     for (let i = 0; i < movieContainers.length; i++) {
-        movieContainers[i].replaceChild(imageElements[i], movieContainers[i].firstChild);
-        createButtons(movieContainers[i]);
+        console.log(movieContainers[i].firstChild)
+        if (movieContainers[i].firstChild == "") {
+            movieContainers[i].replaceChild(imageElements[i], movieContainers[i].firstChild);
+        } else {
+            movieContainers[i].prepend(imageElements[i]);
+        }
+        createButtons(movieContainers[i], isSavePage);
     }
 }
 
-function getMovieNameFromButton() {
-    const movie = String(this.parentElement.parentElement.children[0].src);
+function getMovieNameFromButton(button) {
+    const movie = String(button.parentElement.parentElement.children[0].src);
     return movie.substring(movie.lastIndexOf("/") + 1);
 }
 
@@ -162,4 +171,93 @@ function updateDislikeCount() {
     movies[index].dislikeCount += 1;
     this.children[0].textContent = movies[index].dislikeCount;
     localStorage.setItem('movies', JSON.stringify(movies));
+}
+
+function saveMovie() {
+    const movies = JSON.parse(localStorage.getItem('movies'));
+    let movieTitles = new Array();
+    let savedMovies = JSON.parse(localStorage.getItem('saved'));
+
+    if (savedMovies == null) {
+        savedMovies = new Array()
+    }
+
+    for (let i = 0; i < savedMovies.length; i++) {
+        movieTitles.push(savedMovies[i]['movie']['imgName'])
+    }
+
+    const movie = String(this.parentElement.parentElement.children[0].src);
+    const imgName = movie.substring(movie.lastIndexOf("/") + 1);
+    const index = imgName.substring(0, imgName.indexOf('.')) - 1;
+    
+    if (movieTitles.includes(imgName)) return;
+    savedMovies.push({
+        userName: localStorage.getItem('userName'),
+        movie: movies[index]
+    });
+    localStorage.setItem('saved', JSON.stringify(savedMovies))
+}
+
+function createSavedContainer(savedMovies) {
+    const container = document.querySelector("#saved-movies");
+    for (let i = 0; i < savedMovies.length; i++) {
+        createMovieContainer(container);
+    }
+}
+
+function createMovieContainer(parentContainer) {
+    let movieContainer = document.createElement('div');
+    movieContainer.className = 'movie-container';
+    movieContainer.id = 'movie';
+
+    let buttonContainer = document.createElement('div');
+    buttonContainer.className = 'button-container'
+
+    movieContainer.appendChild(buttonContainer);
+    parentContainer.appendChild(movieContainer);
+}
+function getUserName() {
+    return localStorage.getItem('userName');
+}
+
+function getUserMovies(userName, savedMovies) {
+    let userMovies = new Array();
+    for (let i = 0; i < savedMovies.length; i++) {
+        if (savedMovies[i]['userName'] == userName) {
+            userMovies.push(savedMovies[i]['movie']);
+        }
+    }
+    return userMovies;
+}
+
+function loadSavedMovies() {
+    const userName = getUserName();
+    const savedMovies = JSON.parse(localStorage.getItem('saved'));
+    const userMovies = getUserMovies(userName, savedMovies);
+    createSavedContainer(userMovies);
+    loadImages('#saved-movies', userMovies, true);
+}
+
+function unsaveMovie() {
+    let savedMovies = JSON.parse(localStorage.getItem('saved'));
+    const movieName = getMovieNameFromButton(this);
+    removeMovieFromList(movieName, savedMovies);
+    localStorage.setItem('saved', JSON.stringify(savedMovies));
+    location.reload()
+    console.log(savedMovies)
+}
+
+function getMovieIndex(movieName, movieList) {
+    let movieIndex;
+    movieList.forEach((element, index) => {
+        if (element["movie"]["imgName"] == movieName) {
+            movieIndex = index;
+        };
+    });
+    return movieIndex;
+}
+
+function removeMovieFromList(movieName, movieList) {
+    const index = getMovieIndex(movieName, movieList);
+    movieList.splice(index, 1);
 }
