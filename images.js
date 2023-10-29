@@ -139,9 +139,10 @@ function loadImages(containerID, images, isSavePage) {
 
     for (let i = 0; i < movieContainers.length; i++) {
         console.log(movieContainers[i].firstChild)
-        if (movieContainers[i].firstChild == "") {
+        if (!isSavePage) {
             movieContainers[i].replaceChild(imageElements[i], movieContainers[i].firstChild);
         } else {
+            console.log('here')
             movieContainers[i].prepend(imageElements[i]);
         }
         createButtons(movieContainers[i], isSavePage);
