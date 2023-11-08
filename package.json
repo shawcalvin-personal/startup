@@ -1,0 +1,15 @@
+{
+  "name": "startup",
+  "version": "1.0.0",
+  "description": "## Product Overview How often do you find yourself purusing through Netflix with no clue what to watch? Movie Finder makes it easy to discover something new to watch. Request a random movie suggestion, or browse the top rated movies from other Movie Finder users. After you watch a movie, you can upvote it or downvote it to help others enjoy (or avoid) the same movies as you.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
