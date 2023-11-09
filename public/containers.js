@@ -1,4 +1,4 @@
-function loadImages(container_id, images, is_save_page) {
+async function loadImages(container_id, images, is_save_page) {
     let container = document.querySelector(container_id);
     let movie_section = new MovieSection(images, is_save_page);
     if (container.lastChild.id == 'movie') {
@@ -10,83 +10,76 @@ function loadImages(container_id, images, is_save_page) {
     ;
 }
 
-function fetchMovies(page, movie_array) {
-    const url = `https://api.themoviedb.org/3/movie/popular?language=en-US&page=${page}`;
-    const options = {
-        method: 'GET',
-        headers: {
-            accept: 'application/json',
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ZDI5MzFkZmZiNzJhNTU0Y2RhZmU1ODM0NTY5NmQwMCIsInN1YiI6IjY1NGM0YmY3ZDQ2NTM3MDBlMWE2NzcwMCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.K8uZP4e99qMSl-5Dig92mdqlwl6Swf1W7lQmlcYAO30'
+async function getMovies() {
+    let movies = [];
+    try {
+        const response = await fetch('api/movies');
+        movies = await response.json();
+        localStorage.setItem('movies', JSON.stringify(movies));
+    } catch {
+        const moviesText = localStorage.getItem('movies');
+        if (moviesText) {
+            movies = JSON.parse(moviesText);
         }
-    };
-
-    fetch(url, options)
-        .then(res => res.json())
-        .then(json => {
-            for (i = 0; i < json['results'].length; i++) {
-                movie_array.push({
-                    id: json['results'][i]['id'],
-                    src: `https://image.tmdb.org/t/p/original${json['results'][i]['poster_path']}`,
-                    like_count:  getLikeCount(json['results'][i]['id']),
-                    dislike_count:  getDislikeCount(json['results'][i]['id'])
-                });
-            }
-        })
-        .then(() => {
-            localStorage.setItem('movies', JSON.stringify(movie_array));
-        })
-        .catch(err => console.error('error:' + err));
-}
-
-function createImageArray() {
-    let movie_array = [];
-    for (let i = 1; i < 10; i++) {
-        fetchMovies(i, movie_array);
     }
-}
-
-function getLikeCount(id) { // temporary, will eventually be replaced by database data
-    return Math.floor(Math.random() * 100);
-}
-
-function getDislikeCount(id) { // temporary, will eventually be replaced by database data
-    return Math.floor(Math.random() * 100);
-}
-
-function loadMainPageDetails() {
-    createImageArray();
-    // loadTopMovies(3);
-    // loadRandomMovies(3);
-}
-
-function loadSavedPageDetails() {
-    createImageArray();
-    loadSavedMovies();
-}
-
-function loadTopMovies(count) {
-    const storedMovies = JSON.parse(localStorage.getItem('movies'));
-    let sorted = storedMovies.sort((a, b) => {
-        return (a.like_count - a.dislike_count) - (b.like_count - b.dislike_count);
-    }).reverse();
     
-    loadImages('#top-movies', sorted.slice(0, 3), false);
 }
 
-function getRandomMovie(imgArray) {
-    const index = Math.floor(Math.random() * imgArray.length);
-    image = imgArray[index];
-    imgArray.splice(index, 1);
-    return image;
+async function loadMainPageDetails() {
+    await getMovies();
+    loadTopMovies(3);
+    loadRandomMovies(3);
+}
+
+async function loadTopMovies(count) {
+    let movies = [];
+    try {
+        const response = await fetch('api/movies');
+        movies = await response.json()
+        let sorted = movies.sort((a, b) => {
+            return (a.like_count - a.dislike_count) - (b.like_count - b.dislike_count);
+        }).reverse();
+
+        loadImages('#top-movies', sorted.slice(0, count), false);
+    } catch {
+        const moviesText = localStorage.getItem('movies');
+        if (moviesText) {
+            movies = JSON.parse(moviesText);
+        }
+        let sorted = movies.sort((a, b) => {
+            return (a.like_count - a.dislike_count) - (b.like_count - b.dislike_count);
+        }).reverse();
+
+        loadImages('#top-movies', sorted.slice(0, count), false);
+    }
 }
 
 async function loadRandomMovies(count) {
-    const storedMovies = JSON.parse(localStorage.getItem('movies'));
-    let movies = new Array();
-    for (let i = 0; i < count; i++) {
-        movies.push(getRandomMovie(storedMovies));
+    let random_movies = [];
+    let movies = [];
+    try {
+        const response = await fetch('api/movies');
+        movies = await response.json()
+        for (let i = 0; i < count; i++) {
+            const index = Math.floor(Math.random() * movies.length);
+            image = movies[index];
+            random_movies.push(movies.splice(index, 1)[0]);
+        }
+
+        loadImages('#random-movies', random_movies, false);
+    } catch {
+        const moviesText = localStorage.getItem('movies');
+        if (moviesText) {
+            movies = JSON.parse(moviesText);
+        }
+        for (let i = 0; i < count; i++) {
+            const index = Math.floor(Math.random() * movies.length);
+            image = movies[index];
+            random_movies.push(movies.splice(index, 1)[0]);
+        }
+
+        loadImages('#random-movies', random_movies, false);
     }
-    loadImages('#random-movies', movies, false);
 }
 
 async function loadSavedMovies() {
@@ -97,11 +90,10 @@ async function loadSavedMovies() {
 
     const response = await fetch('api/saved-movies');
     saved_movies = await response.json();
-
     user_name = getUserName()
     user_movie_ids = saved_movies.filter(movie => movie['name'] == user_name).map(movie => parseInt(movie['movie']));
-    user_movies = getMoviesByID(user_movie_ids);
-
+    user_movies = await getMoviesByID(user_movie_ids);
+    
     loadImages('#saved-movies', user_movies, true);
 }
 
@@ -109,15 +101,17 @@ function getUserName() {
     return localStorage.getItem('userName');
 }
 
-function getMoviesByID(id_list) {
+async function getMoviesByID(id_list) {
+    let movie;
     let movies = [];
-    const storedMovies = JSON.parse(localStorage.getItem('movies'));
-    for (let i = 0; i < storedMovies.length; i++) {
-        if (id_list.includes(storedMovies[i]['id'])) {
-            movies.push(storedMovies[i])
-        }
+    let stored_movies = [];
+    const response = await fetch('api/movies');
+    stored_movies = await response.json();
+    stored_movies = [... new Set(stored_movies)];
+    for (let i = 0; i < id_list.length; i++) {
+        movies.push(stored_movies.filter(movie => movie['id'] == id_list[i])[0]);
     }
-    return movies;
+    return movies
 }
 
 function removeMovieChildren(container) {
