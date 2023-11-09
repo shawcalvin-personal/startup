@@ -52,7 +52,7 @@ For this deliverable, I built out the webpage structure using HTML.
 - Database Data - The movies on the "Saved Movies" page represent data stored in the database.
 - WebSocket Data - The movies on the "Find Movies" tab, along with their user scores, represent websocket data that will be updated in real time.
 
-## HTML Deliverable
+## CSS Deliverable
 For this deliverable, I properly styled the application into its final appearance.
 - Header, footer, and main content body  
 - Navigation elements - I added stylization and formatting to the navigation bar.  
@@ -60,3 +60,20 @@ For this deliverable, I properly styled the application into its final appearanc
 - Application elements - Updated styling and made elements responsive to interactions like hovering.  
 - Application text content - Consistent fonts and sizing for appropriate elements.  
 - Application images - Added consistent image sizing and aspect ratio.
+
+## JavaScript Deliverable
+For this deliverable, I added functionality to the application and added placeholders for future technologies.  
+- Login -  When you enter your name on index.html, it stores your name in local storage to use for database queries.  
+- Database - Users can save movies. When they save a movie, it is stored in local storage.   
+- WebSocket - Users can like and dislike movies, which updates the like count. I created placeholder functions getLikeCount and getDislikeCount that will be replaced with live WebSocket data.  
+- Logic - Added functionality to generate random movies, which queries local storage for 3 random movies.  
+
+## Service Deliverable
+For this deliverable, I added functionality to the application and added placeholders for future technologies.  
+- Node / Express - Done.    
+- Static Middleware for Frontend - Done.  
+- Calls to Third Party Endpoints - Instead of loading .jpg files into the public folder, the application calls a third party endpoint to get several hundred movies and their posters upon load.  
+- Backend Service Endpoints - Created post and delete endpoints for saving and removing movies from a users list.  
+- Frontend Calls Service Endpoints - Upon load, the application calls the loaded movies and saved movies endpoints to get the Top Movies and Random Movies.  
+
+
