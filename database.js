@@ -1,9 +1,12 @@
 const { MongoClient, MongoServerError } = require('mongodb');
+const bcrypt = require('bcrypt');
+const uuid = require('uuid');
 const config = require('./dbConfig.json');
 
 const url = `mongodb+srv://${config.userName}:${config.password}@${config.hostname}`;
 const client = new MongoClient(url);
 const db = client.db('startup');
+const userCollection = db.collection('user');
 const saved_collection = db.collection('saved');
 const movie_collection = db.collection('movies');
 
@@ -15,6 +18,28 @@ const movie_collection = db.collection('movies');
   console.log(`Unable to connect to database with ${url} because ${ex.message}`);
   process.exit(1);
 });
+
+function getUser(email) {
+    return userCollection.findOne({ email: email });
+  }
+  
+function getUserByToken(token) {
+return userCollection.findOne({ token: token });
+}
+  
+async function createUser(email, password) {
+// Hash the password before we insert it into the database
+const passwordHash = await bcrypt.hash(password, 10);
+
+const user = {
+    email: email,
+    password: passwordHash,
+    token: uuid.v4(),
+};
+await userCollection.insertOne(user);
+
+return user;
+}
 
 async function updateLikeCount(req_body) {
     const query = {_id: req_body.id};
@@ -77,4 +102,13 @@ function getRandomMovies() {
     return cursor.toArray();
 }
 
-module.exports = { updateLikeCount, addSavedMovie, deleteSavedMovie, getSavedMovies, getTopMovies, getRandomMovies };
+module.exports = { 
+    getUser, 
+    getUserByToken,
+    createUser,
+    updateLikeCount, 
+    addSavedMovie, 
+    deleteSavedMovie, 
+    getSavedMovies, 
+    getTopMovies, 
+    getRandomMovies };

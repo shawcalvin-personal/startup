@@ -2,12 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- Tell browsers not to scale the viewport automatically -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movie Finder</title>
-    <link rel="icon" href="favicon.ico" />
-    <script src="login.js"></script>
+
     <link rel="stylesheet" href = "main.css" />
+    <link rel="stylesheet" href = "login.css" />
+
     <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
     rel="stylesheet"
@@ -23,24 +23,44 @@
           <li class="nav-item">
             <a class="nav-link active" href="index.html">Home</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="movies.html">Find Movies</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="saved.html">Saved Movies</a>
-          </li>
         </menu>
       </nav>
     </header>
 
     <main class="container-fluid bg-secondary text-center">
       <div>
-        <h1>Welcome</h1>
-        <p>Login to Start</p>
-        <form method="get" action="movies.html">
-          <input type="text" id="name" placeholder="Your name here" />
-          <button class="btn btn-primary" onclick="login()">Login</button>
-        </form>
+        <h1>Welcome to Movie Finder</h1>
+        <!-- Displayed when needing authentication -->
+        <div id="loginControls" style="display: none">
+          <div class="input-group mb-3">
+            <span class="input-group-text">@</span>
+            <input class="form-control" type="text" id="userName" placeholder="your@email.com" />
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text">🔒</span>
+            <input class="form-control" type="password" id="userPassword" placeholder="password" />
+          </div>
+          <button type="button" class="btn btn-primary" onclick="loginUser()">Login</button>
+          <button type="button" class="btn btn-primary" onclick="createUser()">Create</button>
+        </div>
+        <!-- Displayed when ready to play -->
+        <div id="playControls" style="display: none">
+          <div id="finderName"></div>
+          <button type="button" class="btn btn-primary" onclick="start()">Start</button>
+          <button type="button" class="btn btn-secondary" onclick="logout()">Logout</button>
+        </div>
+      </div>
+
+      <!-- Error dialog -->
+      <div class="modal fade" id="msgModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content text-dark">
+            <div class="modal-body">error message here</div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
 
@@ -50,5 +70,11 @@
         <a class="text-reset" href="https://github.com/shawcalvin/startup">GitHub</a>
       </div>
     </footer>
+    <script src="login.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
