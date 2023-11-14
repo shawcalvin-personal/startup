@@ -77,3 +77,8 @@ For this deliverable, I added functionality to the application and added placeho
 - Frontend Calls Service Endpoints - Upon load, the application calls the loaded movies and saved movies endpoints to get the Top Movies and Random Movies.  
 
 
+## Database Deliverable  
+For this deliverable, I added database support for saving movies and updating like counts.  
+- MongoDB Atlas DB created - Done.  
+- Endpoints for data - Endpoints now process the data and send it to Mongo.  
+- Stored data in MongoDB - Done.  
