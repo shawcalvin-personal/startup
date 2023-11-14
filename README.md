@@ -82,3 +82,10 @@ For this deliverable, I added database support for saving movies and updating li
 - MongoDB Atlas DB created - Done.  
 - Endpoints for data - Endpoints now process the data and send it to Mongo.  
 - Stored data in MongoDB - Done.  
+
+## Login Deliverable  
+For this deliverable, I authenticate the user and associate actions with that user.
+- User registration - Creates a new account in the database.
+- Existing User - Authenticates user at login.
+- Use MongoDB to store credentials - Stores users and retrieves credentials at login.
+- Restricts functionality - All functionality requires a valid auth token.
