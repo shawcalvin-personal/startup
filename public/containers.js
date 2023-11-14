@@ -10,91 +10,62 @@ async function loadImages(container_id, images, is_save_page) {
     ;
 }
 
-async function getMovies() {
-    let movies = [];
-    try {
-        const response = await fetch('api/movies');
-        movies = await response.json();
-        localStorage.setItem('movies', JSON.stringify(movies));
-    } catch {
-        const moviesText = localStorage.getItem('movies');
-        if (moviesText) {
-            movies = JSON.parse(moviesText);
-        }
-    }
-    
-}
-
 async function loadMainPageDetails() {
-    await getMovies();
-    loadTopMovies(3);
-    loadRandomMovies(3);
+    loadTopMovies();
+    loadRandomMovies();
 }
 
-async function loadTopMovies(count) {
-    let movies = [];
+async function loadTopMovies() {
+    let top_movies = [];
     try {
-        const response = await fetch('api/movies');
-        movies = await response.json()
-        let sorted = movies.sort((a, b) => {
-            return (a.like_count - a.dislike_count) - (b.like_count - b.dislike_count);
-        }).reverse();
+        const response = await fetch('api/top-movies');
+        top_movies = await response.json()
+        localStorage.setItem('top-movies', JSON.stringify(top_movies));
 
-        loadImages('#top-movies', sorted.slice(0, count), false);
     } catch {
-        const moviesText = localStorage.getItem('movies');
+        const moviesText = localStorage.getItem('top-movies');
         if (moviesText) {
-            movies = JSON.parse(moviesText);
+            top_movies = JSON.parse(moviesText);
         }
-        let sorted = movies.sort((a, b) => {
-            return (a.like_count - a.dislike_count) - (b.like_count - b.dislike_count);
-        }).reverse();
-
-        loadImages('#top-movies', sorted.slice(0, count), false);
     }
+    loadImages('#top-movies', top_movies, false);
 }
 
-async function loadRandomMovies(count) {
+async function loadRandomMovies() {
     let random_movies = [];
-    let movies = [];
     try {
-        const response = await fetch('api/movies');
-        movies = await response.json()
-        for (let i = 0; i < count; i++) {
-            const index = Math.floor(Math.random() * movies.length);
-            image = movies[index];
-            random_movies.push(movies.splice(index, 1)[0]);
-        }
+        const response = await fetch('api/random-movies');
+        random_movies = await response.json()
 
-        loadImages('#random-movies', random_movies, false);
+        localStorage.setItem('random-movies', JSON.stringify(top_movies));
+
     } catch {
-        const moviesText = localStorage.getItem('movies');
+        const moviesText = localStorage.getItem('random-movies');
         if (moviesText) {
-            movies = JSON.parse(moviesText);
+            random_movies = JSON.parse(moviesText);
         }
-        for (let i = 0; i < count; i++) {
-            const index = Math.floor(Math.random() * movies.length);
-            image = movies[index];
-            random_movies.push(movies.splice(index, 1)[0]);
-        }
-
-        loadImages('#random-movies', random_movies, false);
     }
+
+    loadImages('#random-movies', random_movies, false);
 }
 
 async function loadSavedMovies() {
-    let saved_movies = []
-    let user_name;
-    let user_movie_ids;
-    let user_movies;
+    let saved_movies = [];
+    const user_name = getUserName();
+    try {
+        const response = await fetch('api/saved-movies/' + user_name);
+        saved_movies = await response.json()
 
-    const response = await fetch('api/saved-movies');
-    saved_movies = await response.json();
-    user_name = getUserName()
-    user_movie_ids = saved_movies.filter(movie => movie['name'] == user_name).map(movie => parseInt(movie['movie']));
-    user_movies = await getMoviesByID(user_movie_ids);
-    
-    loadImages('#saved-movies', user_movies, true);
+        localStorage.setItem('saved-movies', JSON.stringify(saved_movies));
+
+    } catch {
+        const moviesText = localStorage.getItem('saved-movies');
+        if (moviesText) {
+            saved_movies = JSON.parse(moviesText);
+        }
+    }
+
+    loadImages('#saved-movies', saved_movies, true);
 }
 
 function getUserName() {
@@ -213,17 +184,16 @@ class LikeButton extends Button {
     createButton() {
         let button = document.createElement('button');
         button.className = ('btn btn-dark');
-        button.name = this.image['id'];
+        button.name = JSON.stringify(this.image);
 
         let button_image = this.createButtonImage('images/thumb-up.png');
         button.onclick = this.updateLikeCount
+        button.id = 'like-button-' + this.image['_id']
 
         let like_count = document.createElement('span');
         like_count.className = 'like-count'
-        if (this.image['id'] == 507089) {
-            console.log(this.image['like_count']);
-        }
         like_count.textContent = this.image['like_count'];
+        like_count.id = 'like-count-' + this.image['_id']
 
         button.appendChild(like_count);
         button.appendChild(button_image);
@@ -231,16 +201,22 @@ class LikeButton extends Button {
         return button;
     }
 
-    updateLikeCount() {
-        let movies = JSON.parse(localStorage.getItem('movies'));
-        for (let i = 0; i < movies.length; i++) {
-            if (movies[i]['id'] == this.name) {
-                movies[i]['like_count'] += 1;
-                this.children[0].textContent = movies[i]['like_count'];
-                localStorage.setItem('movies', JSON.stringify(movies));
-                return;
-            }
-        }
+    async updateLikeCount() {
+        const details = JSON.parse(this.name);
+        const button = document.getElementById('like-button-' + details['_id']);
+        const other = document.getElementById('dislike-button-' + details['_id']);
+        const like_count = document.getElementById('like-count-' + details['_id']);
+
+        button.disabled = true;
+        other.disabled = true;
+        like_count.textContent = parseInt(like_count.textContent) + 1;
+
+        const response = await fetch('api/movies', {
+            method: 'PUT',
+            headers: {'content-type': 'application/json'},
+            body: JSON.stringify({ id: details['_id'],
+                                    type: 'like-count'})
+        });
     }
 }
 
@@ -253,14 +229,16 @@ class DislikeButton extends Button {
     createButton() {
         let button = document.createElement('button');
         button.className = ('btn btn-dark');
-        button.name = this.image['id'];
+        button.name = JSON.stringify(this.image);
 
         let button_image = this.createButtonImage('images/thumb-down.png');
         button.onclick = this.updateDislikeCount
+        button.id = 'dislike-button-' + this.image['_id']
 
         let dislike_count = document.createElement('span');
         dislike_count.className = 'like-count'
         dislike_count.textContent = this.image['dislike_count'];
+        dislike_count.id = 'dislike-count-' + this.image['_id']
 
         button.appendChild(dislike_count);
         button.appendChild(button_image);
@@ -268,16 +246,22 @@ class DislikeButton extends Button {
         return button;
     }
 
-    updateDislikeCount() {
-        let movies = JSON.parse(localStorage.getItem('movies'));
-        for (let i = 0; i < movies.length; i++) {
-            if (movies[i]['id'] == this.name) {
-                movies[i]['dislike_count'] += 1;
-                this.children[0].textContent = movies[i]['dislike_count'];
-                localStorage.setItem('movies', JSON.stringify(movies));
-                return;
-            }
-        }
+    async updateDislikeCount() {
+        const details = JSON.parse(this.name);
+        const button = document.getElementById('dislike-button-' + details['_id']);
+        const other = document.getElementById('like-button-' + details['_id']);
+        const dislike_count = document.getElementById('dislike-count-' + details['_id']);
+
+        button.disabled = true;
+        other.disabled = true;
+        dislike_count.textContent = parseInt(dislike_count.textContent) + 1;
+
+        const response = await fetch('api/movies', {
+            method: 'PUT',
+            headers: {'content-type': 'application/json'},
+            body: JSON.stringify({ id: details['_id'],
+                                    type: 'dislike-count'})
+        });
     }
 }
 
@@ -291,23 +275,29 @@ class SaveButton extends Button {
     createButton() {
         let button = document.createElement('button');
         button.className = ('save-button btn btn-dark');
-        button.name = this.image['id'];
+        button.name = JSON.stringify(this.image);
 
         if (this.is_save_page) {
             button.textContent = 'Remove Movie';
             button.onclick = this.unsaveMovie
+            button.id = 'unsave-button-' + this.image['_id']
         } else {
             button.textContent = 'Save Movie';
             button.onclick = this.saveMovie
+            button.id = 'save-button-' + this.image['_id']
         }
 
         return button;
     }
 
     async saveMovie() {
+        const details = JSON.parse(this.name);
+        const button_id = 'save-button-' + details['_id'];
+
+        document.getElementById(button_id).disabled = true;
+
         const user_name = localStorage.getItem('userName');
-        const saved_movie = {name: user_name, movie: this.name}
-        try {
+        const saved_movie = {name: user_name, _id: user_name + "-" + details['_id'], src: details['src']}
             const response = await fetch('api/save-movie', {
                 method: 'POST',
                 headers: {'content-type': 'application/json'},
@@ -315,19 +305,16 @@ class SaveButton extends Button {
             });
             const saved_movies = await response.json();
             localStorage.setItem('saved-movies', saved_movies);
-        } catch {
-            let saved_movies = localStorage.getItem('saved-movies');
-            if (!JSON.stringify(saved_movies).includes(JSON.stringify(saved_movie))) {
-                saved_movies.push(saved_movie);
-                localStorage.setItem('saved-movies', saved_movies);
-            };
-        }
-       
     }
 
     async unsaveMovie() {
-        const user_name = getUserName();
-        const unsaved_movie = {name: user_name, movie: this.name}
+        const details = JSON.parse(this.name);
+        const button_id = 'unsave-button-' + details['_id'];
+        
+        document.getElementById(button_id).disabled = true;
+
+        const user_name = localStorage.getItem('userName');
+        const unsaved_movie = {name: user_name, _id: details['_id'], src: details['src']}
         try {
             const response = await fetch('api/save-movie', {
                 method: 'DELETE',
@@ -336,16 +323,18 @@ class SaveButton extends Button {
             });
             const saved_movies = await response.json();
             localStorage.setItem('saved-movies', saved_movies);
-            location.reload();
+            loadImages('#saved-movies', saved_movies, true);
         } catch {
-            let saved_movies = localStorage.getItem('saved-movies');
+            let saved_movies = [];
+            saved_movies = localStorage.getItem('saved-movies');
             for (let i = 0; i < saved_movies.length; i++) {
                 if (JSON.stringify(saved_movies[i]) == JSON.stringify(movie)) {
                   saved_movies.splice(i, 1);
                   localStorage.setItem('saved-movies', saved_movies);
+                  loadImages('#saved-movies', saved_movies, true);
                 }
               }
-              location.reload();
         }
+        
     }
 }

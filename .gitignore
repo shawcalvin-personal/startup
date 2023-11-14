@@ -3,3 +3,5 @@
 node_modules/
 dist/
 dbConfig.json
+movieConfig.json
+db_init.js
