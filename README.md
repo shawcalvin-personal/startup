@@ -89,3 +89,11 @@ For this deliverable, I authenticate the user and associate actions with that us
 - Existing User - Authenticates user at login.
 - Use MongoDB to store credentials - Stores users and retrieves credentials at login.
 - Restricts functionality - All functionality requires a valid auth token.
+
+## WebSocket Deliverable
+For this deliverable, I used WebSocket to broadcast when users like, dislike, and save movies.
+- Backend listends for WebSocket connection - done.
+- Frontend makes WebSocket connection - done.
+- Data sent over WebSocket connection - done.
+- WebSocket data displayed - A chat feature has been added to the top of the main page displaying user likes, dislike, and saves.
+
