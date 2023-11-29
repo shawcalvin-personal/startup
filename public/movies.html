@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movie Finder</title>
     <link rel="icon" href="favicon.ico" />
-    <script src="containers.js"></script>
+    <script src="session.js"></script>
     <link rel="stylesheet" href = "main.css" />
     <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
@@ -15,7 +15,7 @@
     crossorigin="anonymous"
     />
   </head>
-  <body class="bg-dark text-light" onload="loadMainPageDetails()">
+  <body class="bg-dark text-light" onload="session.loadMainPageDetails()">
     <header class="container-fluid">
       <nav class="navbar fixed-top navbar-dark">
         <a class="navbar-brand" href="#">Movie Finder</a>
@@ -34,6 +34,10 @@
     </header>
 
     <main>
+      <div class="users bg-secondary">
+        <span id="user-name"></span>
+        <div id="user-messages"></div>
+      </div>
       <div class="movie-section" id="top-movies">
         <h2 class="section-header">Top Movies</h2>
       </div>
@@ -42,7 +46,7 @@
       <div class="movie-section" id="random-movies">
         <h2>Random Movies</h2>
         <div class="button-container">
-          <button type="button" class="btn btn-dark" onclick="loadRandomMovies(3)">Generate Random Movies</button>
+          <button type="button" class="btn btn-dark" onclick="session.loadRandomMovies()">Generate Random Movies</button>
         </div>
       </div>
     </main>

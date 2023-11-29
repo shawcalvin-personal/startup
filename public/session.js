@@ -1,98 +1,153 @@
-async function loadImages(container_id, images, is_save_page) {
-    let container = document.querySelector(container_id);
-    let movie_section = new MovieSection(images, is_save_page);
-    if (container.lastChild.id == 'movie') {
-        removeMovieChildren(container);
+// Event messages
+const MovieLikeEvent = 'movieDislike';
+const MovieDislikeEvent = 'movieLike';
+const MovieSaveEvent = 'movieSave';
+
+class Session {
+    constructor() {
+        // userNameEl.textContent = this.getUserName();
+        this.configureWebSocket()
     }
-    for (let i = 0; i < movie_section.movies.length; i++) {
-        container.appendChild(movie_section.movies[i].container);
+
+    async loadImages(container_id, images, is_save_page) {
+        let container = document.querySelector(container_id);
+        let movie_section = new MovieSection(images, is_save_page);
+        if (container.lastChild.id == 'movie') {
+            this.removeMovieChildren(container);
+        }
+        for (let i = 0; i < movie_section.movies.length; i++) {
+            container.appendChild(movie_section.movies[i].container);
+        }
+        ;
     }
-    ;
-}
-
-async function loadMainPageDetails() {
-    loadTopMovies();
-    loadRandomMovies();
-}
-
-async function loadTopMovies() {
-    let top_movies = [];
-    try {
-        const response = await fetch('api/top-movies');
-        top_movies = await response.json()
-        localStorage.setItem('top-movies', JSON.stringify(top_movies));
-
-    } catch {
-        const moviesText = localStorage.getItem('top-movies');
-        if (moviesText) {
-            top_movies = JSON.parse(moviesText);
+    
+    async loadMainPageDetails() {
+        this.loadTopMovies();
+        this.loadRandomMovies();
+    }
+    
+    async loadTopMovies() {
+        let top_movies = [];
+        try {
+            const response = await fetch('api/top-movies');
+            top_movies = await response.json()
+            localStorage.setItem('top-movies', JSON.stringify(top_movies));
+    
+        } catch {
+            const moviesText = localStorage.getItem('top-movies');
+            if (moviesText) {
+                top_movies = JSON.parse(moviesText);
+            }
+        }
+        this.loadImages('#top-movies', top_movies, false);
+    }
+    
+    async loadRandomMovies() {
+        let random_movies = [];
+        try {
+            const response = await fetch('api/random-movies');
+            random_movies = await response.json()
+    
+            localStorage.setItem('random-movies', JSON.stringify(top_movies));
+    
+        } catch {
+            const moviesText = localStorage.getItem('random-movies');
+            if (moviesText) {
+                random_movies = JSON.parse(moviesText);
+            }
+        }
+    
+        this.loadImages('#random-movies', random_movies, false);
+    }
+    
+    async loadSavedMovies() {
+        let saved_movies = [];
+        const user_name = this.getUserName();
+        try {
+            const response = await fetch('api/saved-movies/' + user_name);
+            saved_movies = await response.json()
+    
+            localStorage.setItem('saved-movies', JSON.stringify(saved_movies));
+    
+        } catch {
+            const moviesText = localStorage.getItem('saved-movies');
+            if (moviesText) {
+                saved_movies = JSON.parse(moviesText);
+            }
+        }
+    
+        this.loadImages('#saved-movies', saved_movies, true);
+    }
+    
+    getUserName() {
+        return localStorage.getItem('userName');
+    }
+    
+    async getMoviesByID(id_list) {
+        let movie;
+        let movies = [];
+        let stored_movies = [];
+        const response = await fetch('api/movies');
+        stored_movies = await response.json();
+        stored_movies = [... new Set(stored_movies)];
+        for (let i = 0; i < id_list.length; i++) {
+            movies.push(stored_movies.filter(movie => movie['id'] == id_list[i])[0]);
+        }
+        return movies
+    }
+    
+    removeMovieChildren(container) {
+        let children = container.children;
+        for (let i = children.length - 1; i >= 0; i--) {
+            if (children[i].id == 'movie') {
+                container.removeChild(children[i])
+            }
         }
     }
-    loadImages('#top-movies', top_movies, false);
-}
 
-async function loadRandomMovies() {
-    let random_movies = [];
-    try {
-        const response = await fetch('api/random-movies');
-        random_movies = await response.json()
-
-        localStorage.setItem('random-movies', JSON.stringify(top_movies));
-
-    } catch {
-        const moviesText = localStorage.getItem('random-movies');
-        if (moviesText) {
-            random_movies = JSON.parse(moviesText);
-        }
+    configureWebSocket() {
+        const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+        this.socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
+        this.socket.onopen = (event) => {
+          this.displayMsg('system', 'session', 'connected');
+        };
+        this.socket.onclose = (event) => {
+          this.displayMsg('system', 'session', 'disconnected');
+        };
+        this.socket.onmessage = async (event) => {
+          const msg = JSON.parse(await event.data.text());
+          console.log(msg.from)
+          if (msg.type === MovieLikeEvent) {
+            this.displayMsg('user', msg.from, `liked ${msg.value}`);
+          } else if (msg.type === MovieDislikeEvent) {
+            this.displayMsg('user', msg.from, `disliked ${msg.value}`);
+          } else if (msg.type === MovieSaveEvent) {
+            this.displayMsg('user', msg.from, `saved ${msg.value}`);
+          }
+        };
+      }
+    
+    displayMsg(cls, from, msg) {
+        const chatText = document.querySelector('#user-messages');
+        chatText.innerHTML =
+          `<div class="event"><span class="${cls}-event">${from}</span> ${msg}</div>` + chatText.innerHTML;
     }
-
-    loadImages('#random-movies', random_movies, false);
-}
-
-async function loadSavedMovies() {
-    let saved_movies = [];
-    const user_name = getUserName();
-    try {
-        const response = await fetch('api/saved-movies/' + user_name);
-        saved_movies = await response.json()
-
-        localStorage.setItem('saved-movies', JSON.stringify(saved_movies));
-
-    } catch {
-        const moviesText = localStorage.getItem('saved-movies');
-        if (moviesText) {
-            saved_movies = JSON.parse(moviesText);
-        }
-    }
-
-    loadImages('#saved-movies', saved_movies, true);
-}
-
-function getUserName() {
-    return localStorage.getItem('userName');
-}
-
-async function getMoviesByID(id_list) {
-    let movie;
-    let movies = [];
-    let stored_movies = [];
-    const response = await fetch('api/movies');
-    stored_movies = await response.json();
-    stored_movies = [... new Set(stored_movies)];
-    for (let i = 0; i < id_list.length; i++) {
-        movies.push(stored_movies.filter(movie => movie['id'] == id_list[i])[0]);
-    }
-    return movies
-}
-
-function removeMovieChildren(container) {
-    let children = container.children;
-    for (let i = children.length - 1; i >= 0; i--) {
-        if (children[i].id == 'movie') {
-            container.removeChild(children[i])
-        }
+    
+    broadcastEvent(from, type, value) {
+        const event = {
+          from: from,
+          type: type,
+          value: value,
+        };
+        console.log(event)
+        this.socket.send(JSON.stringify(event));
     }
 }
+
+let session = new Session()
+
+
+
 
 class MovieSection {
     constructor(images, is_save_page) {
@@ -203,6 +258,7 @@ class LikeButton extends Button {
 
     async updateLikeCount() {
         const details = JSON.parse(this.name);
+        const user_name = localStorage.getItem('userName');
         const button = document.getElementById('like-button-' + details['_id']);
         const other = document.getElementById('dislike-button-' + details['_id']);
         const like_count = document.getElementById('like-count-' + details['_id']);
@@ -210,6 +266,8 @@ class LikeButton extends Button {
         button.disabled = true;
         other.disabled = true;
         like_count.textContent = parseInt(like_count.textContent) + 1;
+
+        session.broadcastEvent(user_name, MovieLikeEvent, details['title'])
 
         const response = await fetch('api/movies', {
             method: 'PUT',
@@ -250,6 +308,7 @@ class DislikeButton extends Button {
         const details = JSON.parse(this.name);
         const button = document.getElementById('dislike-button-' + details['_id']);
         const other = document.getElementById('like-button-' + details['_id']);
+        const user_name = localStorage.getItem('userName');
         const dislike_count = document.getElementById('dislike-count-' + details['_id']);
 
         button.disabled = true;
@@ -262,6 +321,8 @@ class DislikeButton extends Button {
             body: JSON.stringify({ id: details['_id'],
                                     type: 'dislike-count'})
         });
+
+        session.broadcastEvent(user_name, MovieDislikeEvent, details['title'])
     }
 }
 
@@ -305,6 +366,7 @@ class SaveButton extends Button {
             });
             const saved_movies = await response.json();
             localStorage.setItem('saved-movies', saved_movies);
+            session.broadcastEvent(user_name, MovieSaveEvent, details['title'])
     }
 
     async unsaveMovie() {
