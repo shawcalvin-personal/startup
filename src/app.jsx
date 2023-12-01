@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
 import { Login } from './login/login';
-import { Movies } from './movies/movies';
+import { Movies } from './find/find';
 import { Saved } from './saved/saved';
 import { AuthState } from './login/authState';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -28,7 +28,7 @@ function App() {
               </li>
               {authState === AuthState.Authenticated && (
                 <li className='nav-item'>
-                  <NavLink className='nav-link' to='movies'>
+                  <NavLink className='nav-link' to='find'>
                     Find Movies
                   </NavLink>
                 </li>
@@ -59,7 +59,7 @@ function App() {
             }
             exact
           />
-          <Route path='/movies' element={<Movies userName={userName} />} />
+          <Route path='/find' element={<Movies userName={userName} />} />
           <Route path='/saved' element={<Saved />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
