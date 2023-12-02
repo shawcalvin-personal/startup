@@ -97,3 +97,9 @@ For this deliverable, I used WebSocket to broadcast when users like, dislike, an
 - Data sent over WebSocket connection - done.
 - WebSocket data displayed - A chat feature has been added to the top of the main page displaying user likes, dislike, and saves.
 
+## React Deliverable
+For this deliverable, I used WebSocket to broadcast when users like, dislike, and save movies.
+- Bundled and transpiled - done.
+- Multiple functional react components - Login, movie containers, buttons, and pages are all react components.
+- React router - Routing between login, movie finder, and saved movies.
+- Hooks - Most components keep track of state using useState or issue directions with useEffect.
