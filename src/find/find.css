@@ -1,0 +1,52 @@
+#rand-btn {
+    width: 80%;
+}
+
+.movie-block {
+    width: 100%;
+    text-align: center;
+    background-color: #393e41;
+    padding: 10vw;
+}
+
+.movie-section {
+    padding-bottom: 10vw;
+}
+
+.user-section {
+    text-align: left;
+    width: 100%;
+    background-color: #90a4ae;
+    padding-top: 5em;
+    padding-left: 3em;
+    padding-bottom: 1em;
+}
+
+.btn-img {
+    max-width: 1.5em;
+    margin: 1em;
+}
+
+.save-btn {
+    width: 80%;
+    margin: 10%;
+}
+
+.like-btn {
+    display: inline-block;
+    width: 40%;
+    margin: 5%;
+}
+
+.movie-container {
+    max-width: min(33vmin, 1000px);
+    display: inline-table;
+}
+
+.movie-img {
+    min-width: 200px;
+    min-height: 200px;
+    max-width: min(33vmin, 1000px);
+    aspect-ratio: 8.5 / 11;
+    padding: 10px;
+}
