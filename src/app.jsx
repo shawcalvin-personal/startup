@@ -16,7 +16,7 @@ function App() {
     <BrowserRouter>
       <div className='body bg-dark text-light'>
         <header className='container-fluid'>
-          <nav className='navbar fixed-top navbar-dark'>
+          <nav className='bg-dark navbar fixed-top navbar-dark'>
             <div className='navbar-brand'>
               Movie Finder<sup>&reg;</sup>
             </div>
@@ -43,7 +43,6 @@ function App() {
             </menu>
           </nav>
         </header>
-
         <Routes>
           <Route
             path='/'

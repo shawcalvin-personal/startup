@@ -96,6 +96,12 @@ secureApiRouter.get('/random-movies', async (_req, res) => {
   res.send(movies);
 });
 
+secureApiRouter.get('/movies/:id', async (_req, res) => {
+  const movie = await DB.getMovie(_req.params.id);
+  res.send(movie);
+});
+
+
 // Get saved movies
 secureApiRouter.get('/saved-movies/:user_name', async (_req, res) => {
   const saved = await DB.getSavedMovies(_req.params.user_name);

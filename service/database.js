@@ -42,7 +42,8 @@ return user;
 }
 
 async function updateLikeCount(req_body) {
-    const query = {_id: req_body.id};
+    req_body.movie.like_count = req_body.movie.like_count + 1;
+    const query = {_id: req_body.movie._id};
     let options;
     if (req_body.type=='like-count') {
         options = { $inc: {like_count: 1}};
@@ -50,7 +51,8 @@ async function updateLikeCount(req_body) {
         options = { $inc: {dislike_count: 1}};
     }
     const result = await movie_collection.updateOne(query, options);
-    return result;
+    result.movie = req_body.movie
+    return result
 }
 
 function getSavedMovies(user_name) {
@@ -86,6 +88,12 @@ async function deleteSavedMovie(movie) {
     }
 }
 
+function getMovie(id) {
+    const query = { _id: parseInt(id) }
+    const cursor = movie_collection.find(query);
+    return cursor.toArray();
+}
+
 function getTopMovies() {
     const options = {
         sort: { like_count: -1 },
@@ -109,6 +117,7 @@ module.exports = {
     updateLikeCount, 
     addSavedMovie, 
     deleteSavedMovie, 
+    getMovie,
     getSavedMovies, 
     getTopMovies, 
     getRandomMovies };
