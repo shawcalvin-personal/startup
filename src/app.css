@@ -37,6 +37,10 @@
   menu .nav-item {
     padding: 0 0.3em;
   }
+
+.footer-text {
+  color: white;
+}
   
   footer a {
     float: right;
